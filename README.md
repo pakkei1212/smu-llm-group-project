@@ -50,7 +50,7 @@ nvidia-smi
 
 ## 2️⃣ Clone the Repository
 ```
-git clone `<your-repo-url>`{=html}
+git clone `https://github.com/pakkei1212/smu-llm-group-project.git`
 cd SMU-LLM-GROUP-PROJECT
 ```
 ------------------------------------------------------------------------
