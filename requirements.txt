@@ -1,0 +1,41 @@
+# Core
+numpy
+pandas
+scipy
+tqdm
+
+# Jupyter
+jupyterlab
+ipykernel
+
+# HuggingFace
+transformers
+datasets
+accelerate
+sentence-transformers
+huggingface_hub
+
+# Embeddings + RAG
+langchain
+langchain-community
+langchain-huggingface
+chromadb
+
+# Vector processing
+faiss-cpu
+
+# Medical QA utilities
+scikit-learn
+
+# Tokenization / NLP
+nltk
+spacy
+
+# PDF / document parsing (PMC papers)
+pymupdf
+pdfplumber
+beautifulsoup4
+
+# API & utils
+requests
+python-dotenv
