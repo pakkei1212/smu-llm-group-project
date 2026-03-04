@@ -10,13 +10,6 @@ Answering using:
 -   🐳 Docker
 
 ------------------------------------------------------------------------
-DATASET (BioASQ13)
-LINK: https://participants-area.bioasq.org/datasets/ (Datasets for Task B)
-Training dataset: Training 13b
-Test dataset: 13b golden enriched (13B1_golden, 13B2_golden, 13B3_golden, 13B4_golden)
-Test type: factoid,list,yesno,summary
-
-------------------------------------------------------------------------
 
 # 📁 Project Structure
 ```
