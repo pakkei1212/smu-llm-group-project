@@ -1,41 +1,20 @@
-# Core
-numpy
-pandas
-scipy
-tqdm
-
-# Jupyter
-jupyterlab
-ipykernel
-
-# HuggingFace
-transformers
-datasets
-accelerate
-sentence-transformers
-huggingface_hub
-
-# Embeddings + RAG
-langchain
-langchain-community
-langchain-huggingface
-chromadb
-
-# Vector processing
-faiss-cpu
-
-# Medical QA utilities
-scikit-learn
-
-# Tokenization / NLP
-nltk
-spacy
-
-# PDF / document parsing (PMC papers)
-pymupdf
-pdfplumber
-beautifulsoup4
-
-# API & utils
-requests
-python-dotenv
+datasets==4.6.1
+transformers==5.2.0
+sentencepiece==0.2.1
+datasketch==1.9.0
+langdetect==1.0.9
+pandas==2.3.3
+pyarrow==23.0.1
+tqdm==4.67.3
+ftfy==6.3.1
+python-dotenv==1.2.2
+torch==2.2.0
+sentence-transformers==5.2.3
+faiss-cpu==1.13.2
+chromadb==1.5.2
+scikit-learn==1.7.2
+numpy==1.26.3
+requests==2.32.5
+regex==2026.2.28
+tokenizers==0.22.2
+huggingface_hub==1.5.0
