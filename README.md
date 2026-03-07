@@ -15,6 +15,7 @@ Answering using:
 - Training dataset: Training 13b
 - Test dataset: 13b golden enriched (13B1_golden, 13B2_golden, 13B3_golden, 13B4_golden)
 - Test type: factoid,list,yesno,summary
+- Post-processed data (csv): https://drive.google.com/drive/folders/1Con2hF37SrS7FofwvEhynU5gPIGVsIkr?usp=sharing
 
 ------------------------------------------------------------------------
 
