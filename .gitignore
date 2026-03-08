@@ -77,6 +77,26 @@ chroma_db/
 data/*
 !data/.gitkeep
 
+# Ignore common dataset formats anywhere
+*.csv
+*.tsv
+*.json
+*.jsonl
+*.parquet
+*.feather
+*.arrow
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+
+# Large text datasets
+*.txt
+*.gz
+*.zip
+*.tar.gz
+*.xz
+
 # =====================================================
 
 # Logs / Experiment Tracking
