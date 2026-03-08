@@ -5,7 +5,7 @@ services:
     build: .
     container_name: medical-qa-rag
     ports:
-      - "8888:8888"
+      - "8890:8890"
     volumes:
       - ./data:/workspace/data
       - ./notebooks:/workspace/notebooks
