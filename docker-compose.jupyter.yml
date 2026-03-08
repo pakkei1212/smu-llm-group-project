@@ -4,16 +4,27 @@ services:
   medical-qa-rag:
     build: .
     container_name: medical-qa-rag
+
+    working_dir: /workspace
+
     ports:
-      - "8890:8890"
+      - "8888:8888"
+
     volumes:
       - ./data:/workspace/data
       - ./notebooks:/workspace/notebooks
       - ./src:/workspace/src
       - ./vector_store:/workspace/vector_store
+      - ./.cache:/workspace/.cache
+      - ./.env:/workspace/.env
+
+    env_file:
+      - .env
+
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - TRANSFORMERS_CACHE=/workspace/.cache/huggingface
+
     deploy:
       resources:
         reservations:
@@ -21,5 +32,6 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+
     runtime: nvidia
     tty: true

@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && pip install jupyterlab
 
 # Expose Jupyter port
-EXPOSE 8890
+EXPOSE 8888
 
 # Start JupyterLab
-CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8890", "--no-browser", "--allow-root"]
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
