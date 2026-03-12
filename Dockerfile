@@ -19,6 +19,9 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip install jupyterlab
 
+# Install SciSpaCy model
+RUN python -m pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz
+
 # Expose Jupyter port
 EXPOSE 8888
 
