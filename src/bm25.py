@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from tokenizer import tokenize_query
+from tokenizer import spacy_tokenize_texts, tokenize_query
 
 
 def load_bm25_index(path: str | Path):
