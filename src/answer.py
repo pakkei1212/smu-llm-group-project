@@ -14,8 +14,52 @@ DEFAULT_PROMPT_TEMPLATE = (
 def format_context(chunks: list[tuple], sep: str = "\n\n---\n\n") -> str:
     """Format list of (chunk_id, chunk_text, meta) into a single context string."""
     return sep.join(t[1] for t in chunks)
+    
 
+# ==============================
+# PMID extraction (NEW)
+# ==============================
+def extract_pmids(chunks: list[tuple]) -> list[str]:
+    """
+    Extract unique PMIDs from chunks.
 
+    Supports:
+    - (id, text, metadata_dict)
+    - stringified metadata dict
+    """
+    pmids = set()
+
+    for c in chunks:
+        pmid = None
+
+        # Case 1: tuple with metadata
+        if isinstance(c, tuple) and len(c) >= 3:
+            meta = c[2]
+
+            if isinstance(meta, dict):
+                pmid = meta.get("pmid")
+
+            elif isinstance(meta, str) and meta.startswith("{"):
+                try:
+                    meta_dict = ast.literal_eval(meta)
+                    pmid = meta_dict.get("pmid")
+                except:
+                    pass
+
+        # Case 2: chunk itself is metadata string
+        elif isinstance(c, str) and c.startswith("{"):
+            try:
+                meta_dict = ast.literal_eval(c)
+                pmid = meta_dict.get("pmid")
+            except:
+                pass
+
+        if pmid:
+            pmids.add(str(pmid))
+
+    return sorted(pmids)
+
+    
 def generate_answer(
     question: str,
     context: str,
