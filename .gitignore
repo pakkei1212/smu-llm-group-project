@@ -198,3 +198,4 @@ desktop.ini
 *.tmp
 *.temp
 *.bak
+.env

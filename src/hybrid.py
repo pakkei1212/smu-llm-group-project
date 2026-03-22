@@ -5,7 +5,7 @@ from typing import Any, Callable
 
 RRF_K = 30
 DENSE_WEIGHT = 1.0
-BM25_WEIGHT  = 1.2   # 🔥 increase this
+BM25_WEIGHT  = 1.0   # 🔥 increase this
 
 def rrf_merge(
     dense_results: list[tuple[Any, str, dict]],

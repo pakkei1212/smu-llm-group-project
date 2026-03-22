@@ -4,6 +4,11 @@ Generate answer from question + retrieved context using a configurable LLM.
 import ast
 from typing import Optional
 
+# ==============================
+# GLOBAL MODEL CACHE ✅
+# ==============================
+_model_cache: dict[str, tuple] = {}
+
 # 🔥 Optimized prompt (no duplicate system role)
 DEFAULT_PROMPT_TEMPLATE = (
     "Answer the question using ONLY the provided context.\n"
@@ -67,10 +72,11 @@ def extract_pmids(chunks: list[tuple]) -> list[str]:
 def generate_answer(
     question: str,
     context: str,
-    model_name: str = "Qwen/Qwen2.5-3B-Instruct",  # 🔥 smaller model
+    model_name: str = "Qwen/Qwen2.5-3B-Instruct",
     prompt_template: str = DEFAULT_PROMPT_TEMPLATE,
     max_new_tokens: int = 128,
     device: Optional[str] = None,
+    model_cache: Optional[dict] = None,   # 👈 ADD THIS
 ) -> str:
 
     prompt = prompt_template.format(question=question, context=context)
@@ -79,30 +85,33 @@ def generate_answer(
         prompt,
         model_name=model_name,
         max_new_tokens=max_new_tokens,
-        device=device
+        device=device,
+        model_cache=model_cache   # 👈 PASS DOWN
     )
 
 
-_model_cache: dict = {}
-   
 # ==============================
 # CORE GENERATION (FAST VERSION)
 # ==============================
 def _generate_with_hf(
     prompt: str,
-    model_name: str = "Qwen/Qwen2.5-1.5B-Instruct",
-    max_new_tokens: int = 32,   # 🔥 reduced for speed
-    device: Optional[str] = None,
+    model_name: str,
+    max_new_tokens: int,
+    device: Optional[str],
+    model_cache: Optional[dict] = None,   # 👈 ADD
 ) -> str:
     from transformers import AutoModelForCausalLM, AutoTokenizer
     import torch
 
+    # 👇 choose which cache to use
+    cache = model_cache if model_cache is not None else _model_cache
+    
     model_name = model_name.strip()
 
     # ==========================
     # LOAD MODEL (ONCE ONLY)
     # ==========================
-    if model_name not in _model_cache:
+    if model_name not in cache:
         print(f"🔥 Loading model: {model_name}")
 
         tokenizer = AutoTokenizer.from_pretrained(
@@ -118,9 +127,9 @@ def _generate_with_hf(
             trust_remote_code=True
         )
 
-        _model_cache[model_name] = (tokenizer, model)
+        cache[model_name] = (tokenizer, model)
 
-    tokenizer, model = _model_cache[model_name]
+    tokenizer, model = cache[model_name]
 
     # ==========================
     # BUILD CHAT INPUT (QWEN)
@@ -139,7 +148,7 @@ def _generate_with_hf(
     # ==========================
     # TOKENIZE
     # ==========================
-    MAX_CTX = 1536   # 🔥 safe + fast
+    MAX_CTX = 4096   # 🔥 safe + fast
 
     inputs = tokenizer(
         text,
