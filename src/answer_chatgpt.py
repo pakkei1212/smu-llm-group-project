@@ -43,21 +43,16 @@ _sent_model = SentenceTransformer(_SENT_MODEL_NAME)
 # 🔥 Optimized prompt (no duplicate system role)
 DEFAULT_PROMPT_TEMPLATE = (
     "You are a biomedical QA system.\n\n"
-    "STRICT RULES:\n"
-    "1. Use ONLY the provided context.\n"
-    "2. Do NOT use prior knowledge.\n"
-    "3. Do NOT infer beyond explicit evidence.\n"
-    "4. If the answer is not present or cannot be reasonably inferred, reply EXACTLY:\n"
-    "\"Not enough information\"\n\n"
-
+    "RULES:\n"
+    "1. Use the provided context as the primary evidence.\n"
+    "2. Prefer explicit evidence; allow cautious synthesis across multiple context snippets.\n"
+    "3. If evidence is partial, give the best supported answer and briefly state uncertainty.\n"
+    "4. Reply \"Not enough information\" only when the context has no relevant evidence.\n\n"
     "OUTPUT FORMAT:\n"
-    "- Maximum 100 words.\n"
-    "- No explanation.\n"
-    "- No extra text.\n\n"
-
+    "- Maximum 120 words.\n"
+    "- Answer first, then one short evidence note.\n\n"
     "Question:\n{question}\n\n"
     "Context:\n{context}\n\n"
-
     "Final Answer:"
 )
 
