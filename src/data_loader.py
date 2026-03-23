@@ -37,6 +37,10 @@ def load_and_sample_test_set(
         raise FileNotFoundError(f"Test CSV not found: {path}")
     df = pd.read_csv(path)
     df = _normalize_df(df)
+
+    # 🔥 Filter only factoid + summary
+    df = df[df[TYPE_COLUMN].isin(["factoid", "summary"])].copy()
+    
     total = len(df)
     if total == 0:
         raise ValueError("No rows with valid question types (factoid, list, yesno, summary)")
@@ -72,7 +76,7 @@ def load_and_sample_test_set(
     elif len(sampled) > n_total:
         sampled = sampled.sample(n=n_total, random_state=random_state)
 
-    out_cols = ["question", TYPE_COLUMN]
+    out_cols = ["question", TYPE_COLUMN, ID_COLUMN]
     if ID_COLUMN in sampled.columns:
         out_cols.append(ID_COLUMN)
     return sampled[out_cols].reset_index(drop=True)
