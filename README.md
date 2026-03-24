@@ -1,218 +1,183 @@
-# 🏥 Medical QA RAG Project
+# 📘 PubMed QA with Retrieval-Augmented Generation (RAG)
 
-Retrieval-Augmented Generation (RAG) system for Medical Question
-Answering using:
+## 📌 Overview
+This project implements a **Retrieval-Augmented Generation (RAG)** system for **biomedical question answering** using PubMed abstracts.
 
--   🤗 HuggingFace Transformers
--   🧠 ChromaDB (Persistent Vector Store)
--   🖥 NVIDIA GPU (CUDA)
--   📓 JupyterLab
--   🐳 Docker
+The objective is to reduce **LLM hallucination** by grounding answers in retrieved medical evidence, and to systematically evaluate how different RAG design choices affect performance.
 
-------------------------------------------------------------------------
-- DATASET (BioASQ13)
-- LINK: https://participants-area.bioasq.org/datasets/ (Datasets for Task B)
-- Training dataset: Training 13b
-- Test dataset: 13b golden enriched (13B1_golden, 13B2_golden, 13B3_golden, 13B4_golden)
-- Test type: factoid,list,yesno,summary
-- Post-processed data (csv): https://drive.google.com/drive/folders/1Con2hF37SrS7FofwvEhynU5gPIGVsIkr?usp=sharing
+---
 
-------------------------------------------------------------------------
+## 🏗️ Project Structure
 
-# 📁 Project Structure
 ```
-SMU-LLM-GROUP-PROJECT 
-├── data/ # Raw & processed datasets 
-├── notebooks/ # Jupyter notebooks 
-├── src/ # Core RAG pipeline code 
-├── vector_store/ # Persistent Chroma DB storage 
-├── docker-compose.jupyter.yml 
-├── Dockerfile 
-├── requirements.txt 
-└── README.md
+.
+├── src/                      # Core RAG modules
+├── notebooks/                # Main pipelines (run these)
+├── data/
+├── vector_store/
+├── bm25_index/
+├── Dockerfile
+├── docker-compose.jupyter.yml
+└── requirements.txt
 ```
-------------------------------------------------------------------------
 
-# 🚀 Quick Start (For Group Members)
+---
 
-## 1️⃣ Prerequisites
+## ⚙️ How to Run
 
-Before starting, ensure you have:
+⚠️ This project is **not script-based**. It is designed to run via **Jupyter notebooks**.
 
-### ✅ Required Software
-
--   Docker (latest version)
--   Docker Compose (v2+)
--   NVIDIA GPU (if using GPU acceleration)
--   NVIDIA Container Toolkit (for GPU support)
-
-Check installation:
+### 1. Start Environment (Recommended)
+```bash
+docker-compose -f docker-compose.jupyter.yml up
 ```
-docker --version
-docker compose version
-nvidia-smi
+
+### 2. Run Pipeline (in order)
+1. `pubmed_extraction.ipynb`
+2. `pubmed_chunking_pipelines.ipynb`
+3. `pubmed_embeddings_pipelines.ipynb`
+4. `RAG_Strategies_All6.ipynb`
+5. `medical-rag-eval.ipynb`
+
+---
+
+## 📊 Data Sources
+
+### BioASQ13 Dataset
+- Link: https://participants-area.bioasq.org/datasets/
+- Task: **BioASQ Task B**
+
+**Training Dataset**
+- Training 13b
+
+**Test Dataset**
+- 13b golden enriched:
+  - 13B1_golden
+  - 13B2_golden
+  - 13B3_golden
+  - 13B4_golden
+
+**Question Types**
+- factoid
+- list
+- yesno
+- summary
+
+---
+
+### Post-Processed Dataset (CSV)
+- https://drive.google.com/drive/folders/1Con2hF37SrS7FofwvEhynU5gPIGVsIkr?usp=sharing
+
+---
+
+### PubMed Corpus
+- Abstracts retrieved via PubMed API
+- Parsed using Biopython XML
+
+---
+
+## 📦 Prebuilt Indexes (Download)
+
+To skip heavy preprocessing, download:
+
+https://drive.google.com/drive/u/1/folders/1GsSlv4QWTTcBjnaZ8q2Dor8wsdfDwSDh
+
+Files:
+- `bm25_index.zip`
+- `vector_store.zip`
+
+### After Download
+1. Extract into project root:
 ```
-------------------------------------------------------------------------
-
-# 🐳 Setup Instructions
-
-## 2️⃣ Clone the Repository
+bm25_index/
+vector_store/
 ```
-git clone `https://github.com/pakkei1212/smu-llm-group-project.git`
-cd SMU-LLM-GROUP-PROJECT
+
+2. Ensure structure matches:
 ```
-------------------------------------------------------------------------
-
-## 3️⃣ Build and Start the Environment
+vector_store/<chunk_strategy>/pubmedbert/
+bm25_index/<chunk_strategy>.pkl
 ```
-docker compose -f docker-compose.jupyter.yml up --build
-```
-First build may take several minutes.
 
-------------------------------------------------------------------------
+---
 
-## 4️⃣ Access JupyterLab
+## ✂️ Chunking Strategies
 
-Open browser:
-```
-http://localhost:8888
-```
-------------------------------------------------------------------------
+| Strategy | Description |
+|----------|------------|
+| Fixed-Length (500 chars) | Baseline |
+| Section-Aware (400 tokens) | Structure-preserving |
+| Contextual Section-Aware (400 tokens) | Adds context |
 
-# 🖥 GPU Verification (Important)
+---
 
-Inside Jupyter notebook, run:
-```
-import torch
-torch.cuda.is_available()
-```
-If `True` → GPU is working ✅
-If `False` → check NVIDIA Container Toolkit setup.
+## 🔍 Retrieval Components
 
-------------------------------------------------------------------------
+- Dense: PubMedBERT + Chroma
+- Sparse: BM25 + spaCy
+- Hybrid: Dense + BM25 fusion
 
-# 💾 Persistent Storage Explained
+---
 
-These folders are mounted from your local machine into the container:
-```
-  Local Folder    Container Path            Purpose
-  --------------- ------------------------- ----------------------
-  data/           /workspace/data           Datasets
-  notebooks/      /workspace/notebooks      Experiments
-  src/            /workspace/src            Core code
-  vector_store/   /workspace/vector_store   Chroma persistent DB
-```
-⚠️ Important: Vector embeddings stored in `vector_store/` will persist
-even if container is restarted.
+## 🧠 RAG Variants
 
-------------------------------------------------------------------------
+- RAG1: Dense  
+- RAG2: Hybrid  
+- RAG3: + Reranking  
+- RAG4: + Gradient selection  
+- RAG5: + Diverse prompting  
+- RAG6: + K-means voting  
 
-# 🧠 ChromaDB Usage (Persistent Mode)
+---
 
-Example:
-```
-import chromadb
+## ⚙️ Generation
 
-client = chromadb.PersistentClient(path="./vector_store")
-collection = client.get_or_create_collection("medical_qa")
-```
-Do NOT change the path unless necessary.
+- Qwen (local)
+- OpenAI GPT (optional)
 
-------------------------------------------------------------------------
+Strategies:
+- Greedy
+- Diverse personas
+- K-means selection
 
-# 🛑 Stop the Environment
+---
 
-To stop container:
-```
-Ctrl + C
-```
-To stop and remove container:
-```
-docker compose -f docker-compose.jupyter.yml down
-```
-------------------------------------------------------------------------
+## 📈 Evaluation
 
-# 🔄 Rebuild After Dependency Changes
+- F1 Score
+- Recall
+- Factuality
+- Correctness
 
-If `requirements.txt` is updated:
-```
-docker compose -f docker-compose.jupyter.yml build --no-cache
-docker compose -f docker-compose.jupyter.yml up
-```
-------------------------------------------------------------------------
+Method: DeepEval (LLM-as-a-judge)
 
-# 🧪 Development Workflow
+---
 
-### ✅ Where to write code?
+## 🧾 Key Findings
 
--   Core logic → src/
--   Experiments → notebooks/
--   Data → data/
--   Vector DB auto-saves → vector_store/
+- Hybrid > Dense
+- Reranking gives biggest gain
+- Gradient pruning may remove useful info
+- K-means underperforms
+- High factuality ≠ correctness
 
-------------------------------------------------------------------------
+Best model: **RAG3**
 
-### ✅ Recommended Workflow
+---
 
-1.  Develop RAG logic in src/
-2.  Test via Jupyter notebook
-3.  Refactor stable logic into modules
-4.  Commit frequently
+## 🔮 Future Improvements
 
-------------------------------------------------------------------------
+- Adaptive chunking
+- Metadata-based retrieval
+- Better semantic matching
+- Agentic RAG
 
-# 📦 Installing Additional Python Packages
+---
 
-If you need extra packages:
+## 👥 Team
 
-1.  Add to requirements.txt
-2.  Rebuild container
-
-Do NOT install manually inside container --- changes will be lost after
-restart.
-
-------------------------------------------------------------------------
-
-# 🛠 Common Issues
-
-### ❌ GPU Not Detected
-
-Check:
-```
-nvidia-smi
-```
-Ensure NVIDIA Container Toolkit is installed.
-
-------------------------------------------------------------------------
-
-### ❌ Port 8888 Already In Use
-
-Change port in `docker-compose.jupyter.yml`:
-```
-ports: - "8890:8888"
-```
-Then access:
-```
-http://localhost:8890
-```
-------------------------------------------------------------------------
-
-# 📌 Best Practices For Team
-
--   Do NOT commit vector_store/
--   Do NOT commit large datasets
--   Use .gitignore
--   Always rebuild after dependency change
--   Keep RAG logic modular
-
-------------------------------------------------------------------------
-
-# 🎯 Summary
-
-This Docker setup provides:
-
--   Reproducible environment
--   GPU acceleration
--   Persistent vector database
--   Clean separation of code & data
--   Easy onboarding for new members
+- Yip Pak Kei  
+- Calvin Li  
+- Low Min Yee  
+- Chen Qihang  
+- Koh We Kiat  

@@ -38,8 +38,8 @@ def load_and_sample_test_set(
     df = pd.read_csv(path)
     df = _normalize_df(df)
 
-    # 🔥 Filter only factoid + summary
-    df = df[df[TYPE_COLUMN].isin(["factoid", "summary"])].copy()
+    # 🔥 Filter only factoid + list
+    #df = df[df[TYPE_COLUMN].isin(["factoid", "list"])].copy()
     
     total = len(df)
     if total == 0:
