@@ -12,7 +12,22 @@ The objective is to reduce **LLM hallucination** by grounding answers in retriev
 ```
 .
 ├── src/                      # Core RAG modules
+│   ├── chroma_manager.py
+│   ├── embedding_manager.py
+│   ├── dense.py
+│   ├── bm25.py
+│   ├── hybrid.py
+│   ├── answer_qwen.py
+│   ├── answer_chatgpt.py
+│   └── tokenizer.py
+│
 ├── notebooks/                # Main pipelines (run these)
+│   ├── pubmed_extraction.ipynb
+│   ├── pubmed_chunking_pipelines.ipynb
+│   ├── pubmed_embeddings_pipelines.ipynb
+│   ├── RAG_Strategies_All6.ipynb
+│   └── medical-rag-eval.ipynb
+│
 ├── data/
 ├── vector_store/
 ├── bm25_index/
@@ -32,12 +47,24 @@ The objective is to reduce **LLM hallucination** by grounding answers in retriev
 docker-compose -f docker-compose.jupyter.yml up
 ```
 
-### 2. Run Pipeline (in order)
-1. `pubmed_extraction.ipynb`
-2. `pubmed_chunking_pipelines.ipynb`
-3. `pubmed_embeddings_pipelines.ipynb`
-4. `RAG_Strategies_All6.ipynb`
-5. `medical-rag-eval.ipynb`
+### 2. Run Pipeline
+
+Execute notebooks in order:
+
+1. **Data Extraction**
+   - `pubmed_extraction.ipynb`
+
+2. **Chunking**
+   - `pubmed_chunking_pipelines.ipynb`
+
+3. **Embedding + Indexing**
+   - `pubmed_embeddings_pipelines.ipynb`
+
+4. **RAG Experiments**
+   - `RAG_Strategies_All6.ipynb`
+
+5. **Evaluation**
+   - `medical-rag-eval.ipynb`
 
 ---
 
@@ -174,7 +201,8 @@ Best model: **RAG3**
 
 ---
 
-## 👥 Team
+## 👥 Singapore Managment University (MITB)
+### CS614 – Generative AI with Large Language Models - Group 3
 
 - Yip Pak Kei  
 - Calvin Li  
