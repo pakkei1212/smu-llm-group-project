@@ -29,8 +29,6 @@ The objective is to reduce **LLM hallucination** by grounding answers in retriev
 │   └── medical-rag-eval.ipynb
 │
 ├── data/
-├── vector_store/
-├── bm25_index/
 ├── Dockerfile
 ├── docker-compose.jupyter.yml
 └── requirements.txt
